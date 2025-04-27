@@ -39,15 +39,15 @@ public class GameFrame extends JFrame implements ActionListener {
         loadLastGame = new JMenuItem("Load Last Game");
 
         speed.addActionListener(this);
-        ImageIcon speedIcon = new ImageIcon(GameFrame.class.getResource("resources/speed.png"));
+        ImageIcon speedIcon = new ImageIcon(GameFrame.class.getResource("/speed.png"));
         speed.setIcon(speedIcon);
 
         color.addActionListener(this);
-        ImageIcon colorIcon = new ImageIcon(GameFrame.class.getResource("resources/color.png"));
+        ImageIcon colorIcon = new ImageIcon(GameFrame.class.getResource("/color.png"));
         color.setIcon(colorIcon);
 
         loadLastGame.addActionListener(this);
-        ImageIcon loadIcon = new ImageIcon(GameFrame.class.getResource("resources/loading.png"));
+        ImageIcon loadIcon = new ImageIcon(GameFrame.class.getResource("/loading.png"));
         loadLastGame.setIcon(loadIcon);
 
         settingsMenu.add(speed);

@@ -1,6 +1,8 @@
 package org.example.game;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.databaseH2.DbHelper;
 import org.example.databaseH2.Settings;
 
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GamePanel extends JPanel implements ActionListener {
+
+    private static final Logger LOGGER = LogManager.getLogger(GamePanel.class);
 
     public static final int SCREEN_WIDTH = 600;
     public static final int SCREEN_HEIGHT = 600;
@@ -43,7 +47,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private void startGame() {
         initAppleCoordinates();
-        //refactorAppleCoordinates();
         CURRENT_STATE = States.IS_RUNNING;
         TIMER = new Timer(CURRENT_SPEED, this);
         TIMER.start();
@@ -62,7 +65,6 @@ public class GamePanel extends JPanel implements ActionListener {
             SNAKE_HEAD = new Tile();
             MOVING_DIRECTION = Direction.RIGHT;
             initAppleCoordinates();
-            //refactorAppleCoordinates();
         }
         CURRENT_STATE = States.IS_RUNNING;
         if(TIMER == null){
@@ -74,28 +76,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private void initAppleCoordinates() {
         APPLE_COORDINATES.setX(RANDOM.nextInt(SCREEN_WIDTH / PIXEL_SIZE));
         APPLE_COORDINATES.setY(RANDOM.nextInt(SCREEN_HEIGHT / PIXEL_SIZE));
-    }
-
-    /**
-     * make sure that apple coordinates are not the same as head or body coordinates
-     */
-    private void refactorAppleCoordinates() {
-        ArrayList<Tile> snakeTiles = new ArrayList<>(SNAKE_BODY);
-        snakeTiles.add(SNAKE_HEAD);
-        boolean appleCoordinatesOk = true;
-
-        while (true){
-            for (Tile snakeTile : snakeTiles) {
-                if (snakeTile.equals(APPLE_COORDINATES)) {
-                    appleCoordinatesOk = false;
-                    break;
-                }
-            }
-            if(appleCoordinatesOk){
-                break;
-            }
-            initAppleCoordinates();
-        }
     }
 
     private void displayMessage(Message message,Graphics graphics){
@@ -176,17 +156,6 @@ public class GamePanel extends JPanel implements ActionListener {
         graphics.fillOval(APPLE_COORDINATES.getX() * PIXEL_SIZE, APPLE_COORDINATES.getY() * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
     }
 
-    private void drawGrid(Graphics graphics) {
-        // x axis
-        for(int i = 1; i < SCREEN_HEIGHT / PIXEL_SIZE; i++){
-            graphics.drawLine(0, i * PIXEL_SIZE, SCREEN_WIDTH, i * PIXEL_SIZE);
-        }
-        // y axis
-        for(int i = 1; i < SCREEN_WIDTH / PIXEL_SIZE; i++){
-            graphics.drawLine(i * PIXEL_SIZE, 0, i * PIXEL_SIZE, SCREEN_HEIGHT);
-        }
-    }
-
     private void draw(Graphics graphics){
 
         switch (CURRENT_STATE) {
@@ -213,8 +182,7 @@ public class GamePanel extends JPanel implements ActionListener {
                         DbHelper.updateScore(CURRENT_USER.id(), SNAKE_BODY.size());
                     }
                 } catch (SQLException e) {
-                    System.out.println("Error while saving score...");
-                    System.out.println(e.getMessage());
+                    LOGGER.error("Error while saving score...");
                 }
             }
             case IS_RUNNING -> drawAllComponents(graphics);
@@ -222,7 +190,6 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void drawAllComponents(Graphics graphics) {
-        //drawGrid(graphics);
         drawApple(graphics);
         drawSnakeHead(graphics);
         drawSnakeBody(graphics);
@@ -260,7 +227,6 @@ public class GamePanel extends JPanel implements ActionListener {
         if(tileEncountered(SNAKE_HEAD, APPLE_COORDINATES)){
             SNAKE_BODY.add(new Tile(APPLE_COORDINATES.getX(), APPLE_COORDINATES.getY()));
             initAppleCoordinates();
-            //refactorAppleCoordinates();
         }
         for(int i = SNAKE_BODY.size() - 1; i >=0; i--){
             Tile currentTile = SNAKE_BODY.get(i);

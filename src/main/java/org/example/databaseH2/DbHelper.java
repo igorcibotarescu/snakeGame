@@ -1,20 +1,23 @@
 package org.example.databaseH2;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.game.User;
 
-import java.nio.file.Paths;
 import java.sql.*;
 
 
 
 public class DbHelper {
 
+    private static final Logger LOGGER = LogManager.getLogger(DbHelper.class);
+
     static {
         try {
             initDatabase();
         } catch (SQLException e) {
-            System.out.println("Could not init Db");
+            LOGGER.error("Could not init Db");
         }
     }
 

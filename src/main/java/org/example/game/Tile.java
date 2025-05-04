@@ -30,7 +30,7 @@ public class  Tile  implements Serializable {
         this.y = y;
     }
 
-    public boolean equals(Tile tile) {
+    public boolean isEqual(Tile tile) {
         if (this == tile) return true;
         if (tile == null || getClass() != tile.getClass()) return false;
         return x == tile.x && y == tile.y;
